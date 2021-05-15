@@ -3,6 +3,7 @@
 const fs = require("fs");
 const {forceExtendPipe} = require("./app/force-extend-pipe");
 const {parenthesisCurry} = require("./app/parenthesis-curry");
+const {wrapCurry} = require('./app/wrap-curry');
 const {pipe, tap} = require('./app/utils');
 
 const readTextFile = fileName => fs.readFileSync(fileName).toString();
@@ -11,6 +12,7 @@ const writeTextFile = fileName => text => fs.writeFileSync(fileName, text);
 const customReformat = pipe([
   parenthesisCurry,
   forceExtendPipe,
+  wrapCurry,
 ]);
 
 const bash = filePath => pipe([
