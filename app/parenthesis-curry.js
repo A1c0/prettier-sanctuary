@@ -1,52 +1,38 @@
 const {join, replaceAll, split, pipe, INDENT} = require("./utils");
 const {space} = require("./common");
 
-const getIndentNbSpace = array => index => /^([ ]*).*$/.exec(array[index] || '')[1].split('').length;
+const getIndent = line => /^([ ]*).*$/.exec(line || '')[1];
 
 const min = min => value => value < min ? min : value;
 
-const fixIndentLine = (value, index, array) => {
-  const previousValue = array[index-1] || '';
-  const previousValue2 = array[index-2] || '';
-  const previousIndentNbSpace = getIndentNbSpace(array)(index-1);
+const fixIndent = beforeFormat => afterFormat => {
+  const beforeFormatArray = beforeFormat.split("\n").map(s => s.trim());
+  const afterFormatArray = afterFormat.split("\n");
 
-  if ((/^.*\[$/.test(previousValue) || /^.*\{$/.test(previousValue) || /^.*=>$/.test(previousValue))) {
-    return value.replace(/(^[ ]*)(.*)$/, `${space(previousIndentNbSpace + INDENT)}$2`)
+  const indexStartToFix = afterFormatArray.map((value, index) => [index, value])
+                                          .filter(([i, line]) => !beforeFormatArray.includes(line.trim()))
+                                          .filter(([i, line]) => /^.*[\[{]$/.test(line))
+                                          .map(([index, line]) => index);
+  for (const i of indexStartToFix) {
+    const indent = getIndent(afterFormatArray[i +1])
+    const nbFixIndent = min(0)(indent.split('').length - INDENT);
+    const fixIndent = space(nbFixIndent);
+    const fixIndentFinish = space(min(0)(nbFixIndent - INDENT));
+    let j = 0;
+    while (getIndent(afterFormatArray[i +1 +j]) === indent){
+      afterFormatArray[i +1 +j] = afterFormatArray[i +1 +j].replace(/(^[ ]*)(.*)$/, `${fixIndent}$2`)
+      j++;
+    }
+    afterFormatArray[i +1 +j] = afterFormatArray[i +1 +j].replace(/(^[ ]*)(.*)$/, `${fixIndentFinish}$2`)
   }
-
-  if (/^[ ]*\].*$/.test(value) || /^[ ]*\}.*$/.test(value)) {
-    return value.replace(/(^[ ]*)(.*)$/, `${space(min(0)(previousIndentNbSpace - INDENT))}$2`)
-  }
-
-  if (/^.*=>$/.test(previousValue2)) {
-    return value.replace(/(^[ ]*)(.*)$/, `${space(min(0)(previousIndentNbSpace - INDENT))}$2`)
-  }
-
-  if (/^.*;$/.test(previousValue)) {
-    return value.replace(/(^[ ]*)(.*)$/, `${space(0)}$2`)
-  }
-
-  return value.replace(/(^[ ]*)(.*)$/, `${space(previousIndentNbSpace)}$2`)
+  return afterFormatArray.join('\n');
 }
 
-const fixEachIndentLine = array => {
-  for (let i = 0; i < array.length; i++){
-    array[i] = fixIndentLine(array[i], i, array);
-  }
-  return array;
-}
-
-const fixIndent = pipe([
-  split("\n"),
-  fixEachIndentLine,
-  // join("\n")
-]);
-
-const parenthesisCurry = pipe([
+const parenthesisCurry = s => pipe([
   replaceAll(/(\n[ ]*\))/g)(')'),
   replaceAll(/(\(\n[ ]*)/g)('('),
+  fixIndent(s),
   replaceAll(/([^ ])(\()/g)('$1 ('),
-  fixIndent,
-]);
+])(s);
 
 module.exports = {parenthesisCurry}
