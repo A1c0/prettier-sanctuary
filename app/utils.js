@@ -20,9 +20,16 @@ const when = p => fn => a => {
     return fn(a);
   }
   return a;
-}
+};
+
+const reverse = a => a.reverse();
+
+const INDENT = 2;
+const MAX_LENGTH = 80;
 
 module.exports = {
+  INDENT,
+  MAX_LENGTH,
   tap,
   pipe,
   filter,
@@ -39,5 +46,5 @@ module.exports = {
   replaceAll,
   join,
   slice,
-  when
+  when, reverse
 }

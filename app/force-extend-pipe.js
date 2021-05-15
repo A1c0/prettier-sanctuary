@@ -1,10 +1,6 @@
 const {when} = require("./utils");
 const {flip, concat, flatten, split, slice, pipe, map, join} = require("./utils");
-
-const space = pipe([
-  x => Array(x).fill(' '),
-  join('')
-]);
+const {space} = require("./common");
 
 const prependString = flip(concat);
 const nbOf = c => s => s.split('').filter(x => x === c).length
