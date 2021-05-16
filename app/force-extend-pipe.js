@@ -25,7 +25,7 @@ const extendPipeLine = indent => line => {
   }
   const [previousIndent, pipeBegin, args, pipeEnd] = pipeRegex.exec(line).splice(1);
   const argsArray = splitArgs(args).map(prependString(space(indent)));
-  const init = argsArray.slice(0, argsArray.length-2);
+  const init = argsArray.slice(0, argsArray.length - 1);
   const last = argsArray[argsArray.length-1];
   const argsArrayWithComma = flatten([init.map(concat(',')), last]);
   return flatten([pipeBegin, argsArrayWithComma, pipeEnd]).map(prependString(previousIndent)).join('\n');
