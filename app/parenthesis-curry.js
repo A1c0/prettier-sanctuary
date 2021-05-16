@@ -15,7 +15,7 @@ const fixIndent = beforeFormat => afterFormat => {
                                           .map(([index, line]) => index);
   for (const i of indexStartToFix) {
     const indent = getIndent(afterFormatArray[i +1])
-    const nbFixIndent = min(0)(indent.split('').length - INDENT);
+    const nbFixIndent = min(0)(indent.length - INDENT);
     const fixIndent = space(nbFixIndent);
     const fixIndentFinish = space(min(0)(nbFixIndent - INDENT));
     let j = 0;
