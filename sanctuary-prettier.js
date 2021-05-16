@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 "use strict";
 const fs = require("fs");
+const {defFormat} = require("./app/def-format");
 const {forceExtendPipe} = require("./app/force-extend-pipe");
 const {parenthesisCurry} = require("./app/parenthesis-curry");
 const {wrapCurry} = require('./app/wrap-curry');
@@ -13,6 +14,7 @@ const customReformat = pipe([
   parenthesisCurry,
   forceExtendPipe,
   wrapCurry,
+  defFormat,
 ]);
 
 const bash = filePath => pipe([
