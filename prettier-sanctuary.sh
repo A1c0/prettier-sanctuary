@@ -2,4 +2,4 @@ set -e
 
 ./node_modules/.bin/prettier --write "$1"
 
-./node_modules/sanctuary-prettier/sanctuary-prettier.js "$1"
+./node_modules/prettier-sanctuary/prettier-sanctuary.js "$1"
