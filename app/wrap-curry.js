@@ -1,4 +1,8 @@
-const {map, join, when, split, concat, pipe, flip, replaceAll, flatten, MAX_LENGTH} = require("./utils");
+const {tap} = require("./utils");
+const {splitOnEoLNotIgnored} = require("./ignore-line");
+const {joinNotIgnored} = require("./ignore-line");
+const {mapOnLines} = require("./ignore-line");
+const {map, when, concat, pipe, flip, replaceAll, MAX_LENGTH} = require("./utils");
 const {space} = require("./common");
 
 const splitOnParenthesis = pipe([
@@ -31,7 +35,7 @@ const wrapLine = line => {
     tail[tail.length - 2] = `${tail[tail.length - 2]}${tail[tail.length - 1]}`;
     tail = tail.slice(0, tail.length - 1);
   }
-  const newTail = tail.slice(1).map(x => `${space(head.split('').length)}${x}`)
+  const newTail = tail.slice(1).map(x => `${space(head.length)}${x}`)
   head = `${head}${tail[0] || ''}`;
 
   return [head, ...newTail].join('\n');
@@ -40,10 +44,7 @@ const wrapLine = line => {
 const needToBeWrapped = x => x.length >= MAX_LENGTH && x.includes('(');
 
 const wrapCurry = pipe([
-  split("\n"),
-  map(when(needToBeWrapped)(wrapLine)),
-  flatten,
-  join('\n')
+  mapOnLines(when(needToBeWrapped)(wrapLine)),
 ]);
 
 module.exports = {wrapCurry};

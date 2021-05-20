@@ -1,4 +1,7 @@
-const {map, join, when, split, concat, pipe, flip, replaceAll, flatten, MAX_LENGTH} = require("./utils");
+const {splitOnEoLNotIgnored} = require("./ignore-line");
+const {mapOnLines} = require("./ignore-line");
+const {joinNotIgnored} = require("./ignore-line");
+const {map, join, split, pipe} = require("./utils");
 const {space} = require("./common");
 
 const inlineDef = s => {
@@ -20,19 +23,14 @@ const wrapDef = s => {
   }
   const [base, head, ...tail] = regex.exec(s).slice(1);
   const strings = [`${base}${head}`, ...tail.map(t => `${space(base.length)}${t}`)];
-  const s1 = strings.join('\n');
-  return s1;
+  return strings.join('\n');
 };
 
-const wrapAllPipe = pipe([
-  split('\n'),
-  map(wrapDef),
-  join('\n'),
-])
-
 const defFormat = pipe([
-  inlineDef,
-  wrapAllPipe
+  joinNotIgnored,
+  mapOnLines(inlineDef),
+  splitOnEoLNotIgnored,
+  mapOnLines(wrapDef)
 ]);
 
 module.exports = {defFormat}

@@ -1,3 +1,4 @@
+const {joinNotIgnored, splitOnEoLNotIgnored, mapOnLines} = require("./ignore-line");
 const {replaceAll, pipe, INDENT} = require("./utils");
 const {space} = require("./common");
 
@@ -26,13 +27,20 @@ const fixIndent = beforeFormat => afterFormat => {
     afterFormatArray[i +1 +j] = afterFormatArray[i +1 +j].replace(/(^[ ]*)(.*)$/, `${fixIndentFinish}$2`)
   }
   return afterFormatArray.join('\n');
-}
+};
 
-const parenthesisCurry = s => pipe([
-  replaceAll(/(\n[ ]*\))/g)(')'),
-  replaceAll(/(\(\n[ ]*)/g)('('),
-  fixIndent(s),
-  replaceAll(/([^ ])(\()/g)('$1 ('),
+const _parenthesisCurry = s => pipe([
+  replaceAll (/(\n *\))/g) (')'),
+  replaceAll (/(\(\n *)/g) ('('),
+  replaceAll (/\)[\n ]*\(/g) (')('),
+  fixIndent (s),
+  replaceAll (/([^ ])(\()/g) ('$1 ('),
 ])(s);
+
+const parenthesisCurry = pipe([
+  joinNotIgnored,
+  mapOnLines(_parenthesisCurry),
+  splitOnEoLNotIgnored,
+]);
 
 module.exports = {parenthesisCurry}
