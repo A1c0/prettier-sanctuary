@@ -1,7 +1,4 @@
-const {tap} = require("./utils");
-const {splitOnEoLNotIgnored} = require("./ignore-line");
-const {joinNotIgnored} = require("./ignore-line");
-const {mapOnLines} = require("./ignore-line");
+const {mapOnLines, splitOnEoLNotIgnored} = require("./ignore-line");
 const {map, when, concat, pipe, flip, replaceAll, MAX_LENGTH} = require("./utils");
 const {space} = require("./common");
 
@@ -45,6 +42,7 @@ const needToBeWrapped = x => x.length >= MAX_LENGTH && x.includes('(');
 
 const wrapCurry = pipe([
   mapOnLines(when(needToBeWrapped)(wrapLine)),
+  splitOnEoLNotIgnored,
 ]);
 
 module.exports = {wrapCurry};
