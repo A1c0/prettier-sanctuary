@@ -24,6 +24,28 @@ const concatDeepString = a => {
   }
 }
 
+const createArray = s => {
+  const arr = s.split(") (");
+  const head = arr[0]?.concat(`)`);
+  const cors = arr.slice(1,arr.length -1 ).map(x => `(${x})`);
+  const last = arr[arr.length - 1]?.replace (/^/,'(');
+
+  return [head, ...cors, last].filter(x=> !!x);
+}
+
+const min = min => value => value < min ? min : value;
+
+const forceFixWrapLine = s => createArray(s).reduce((acc, value) => {
+  const last = acc[acc.length-1];
+  if (last) {
+    const indentToAdd = min(0)(last.lastIndexOf('('))
+    value = `${space(indentToAdd)}${value}`
+  }
+  acc.push(value);
+  return acc;
+}, []).join("\n");
+
+const needToBeWrapped = x => x.length >= MAX_LENGTH && x.includes('(');
 
 const wrapLine = line => {
   const array = splitOnParenthesis(line);
@@ -35,10 +57,8 @@ const wrapLine = line => {
   const newTail = tail.slice(1).map(x => `${space(head.length)}${x}`)
   head = `${head}${tail[0] || ''}`;
 
-  return [head, ...newTail].join('\n');
+  return [head, ...newTail].map(x => when(needToBeWrapped)(forceFixWrapLine)(x)).join('\n');
 }
-
-const needToBeWrapped = x => x.length >= MAX_LENGTH && x.includes('(');
 
 const wrapCurry = pipe([
   mapOnLines(when(needToBeWrapped)(wrapLine)),
