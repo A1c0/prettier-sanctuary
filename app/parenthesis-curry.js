@@ -8,7 +8,7 @@ const min = min => value => value < min ? min : value;
 
 const fixIndent = beforeFormat => afterFormat => {
 
-  const beforeFormatArray = beforeFormat.split("\n");
+  const beforeFormatArray = beforeFormat.split("\n").map(line =>line.trim());
   const afterFormatArray = afterFormat.split("\n");
 
   const indexStartToFix = afterFormatArray.map((value, index) => [index, value])
