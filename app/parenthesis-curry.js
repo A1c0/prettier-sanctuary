@@ -7,23 +7,28 @@ const getIndent = line => /^([ ]*).*$/.exec(line || '')[1];
 const min = min => value => value < min ? min : value;
 
 const fixIndent = beforeFormat => afterFormat => {
-  const beforeFormatArray = beforeFormat.split("\n").map(s => s.trim());
+
+  const beforeFormatArray = beforeFormat.split("\n");
   const afterFormatArray = afterFormat.split("\n");
 
   const indexStartToFix = afterFormatArray.map((value, index) => [index, value])
                                           .filter(([i, line]) => !beforeFormatArray.includes(line.trim()))
                                           .filter(([i, line]) => /^.*[\[{]$/.test(line))
                                           .map(([index, line]) => index);
-  for (const i of indexStartToFix) {
+
+  const indexStartToFixReversed = indexStartToFix.reverse();
+
+  for (const i of indexStartToFixReversed) {
     const indent = getIndent(afterFormatArray[i +1])
-    const nbFixIndent = min(0)(indent.length - INDENT);
-    const fixIndent = space(nbFixIndent);
-    const fixIndentFinish = space(min(0)(nbFixIndent - INDENT));
     let j = 0;
-    while (getIndent(afterFormatArray[i +1 +j]) === indent){
+    while (getIndent(afterFormatArray[i +1 +j]) >= indent){
+      const innerIndent =getIndent(afterFormatArray[i +1+j])
+      const nbFixIndent = min(0)(innerIndent.length - INDENT);
+      const fixIndent = space(nbFixIndent);
       afterFormatArray[i +1 +j] = afterFormatArray[i +1 +j].replace(/(^[ ]*)(.*)$/, `${fixIndent}$2`)
       j++;
     }
+    const fixIndentFinish = space(min(0)(indent.length - INDENT * 2));
     afterFormatArray[i +1 +j] = afterFormatArray[i +1 +j].replace(/(^[ ]*)(.*)$/, `${fixIndentFinish}$2`)
   }
   return afterFormatArray.join('\n');

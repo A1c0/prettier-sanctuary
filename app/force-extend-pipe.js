@@ -6,7 +6,7 @@ const prependString = flip(concat);
 const nbOf = c => s => s.split('').filter(x => x === c).length
 const haveClosedBracket = s => (nbOf('(')(s) === nbOf(')')(s)) && (nbOf('[')(s) === nbOf(']')(s));
 
-const pipeRegex = /( *)(.*?S.pipe \(\[)(.*?)(]\).*)/;
+const pipeRegex = /( *)(.*?S\.pipeK? \(\[)(.*?)(]\).*)/;
 
 const splitArgs = s => s.split(', ').reduce((acc, value) => {
   const last = acc[acc.length - 1];
