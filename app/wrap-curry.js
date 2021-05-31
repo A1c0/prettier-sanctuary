@@ -45,7 +45,7 @@ const forceFixWrapLine = s => createArray(s).reduce((acc, value) => {
   return acc;
 }, []).join("\n");
 
-const needToBeWrapped = x => x.length >= MAX_LENGTH && x.includes('(');
+const needToBeWrapped = x => x.length >= MAX_LENGTH && /^.*\(.*\) \(.*\).*$/.test(x);
 
 const wrapLine = line => {
   const array = splitOnParenthesis(line);
