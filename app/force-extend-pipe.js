@@ -1,5 +1,5 @@
 const {mapOnLines, splitOnEoLNotIgnored} = require("./ignore-line");
-const {flip, concat, flatten, pipe} = require("./utils");
+const {flip, concat, flatten, pipe, INDENT} = require("./utils");
 const {space} = require("./common");
 
 const prependString = flip(concat);
@@ -32,7 +32,7 @@ const extendPipeLine = indent => line => {
 }
 
 const forceExtendPipe = pipe([
-  mapOnLines(extendPipeLine(2)),
+  mapOnLines(extendPipeLine(INDENT)),
   splitOnEoLNotIgnored,
 ]);
 
