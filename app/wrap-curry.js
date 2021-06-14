@@ -27,18 +27,25 @@ const concatDeepString = a => {
 const createArray = s => {
   const arr = s.split(") (");
   const head = arr[0]?.concat(`)`);
-  const cors = arr.slice(1,arr.length -1 ).map(x => `(${x})`);
+  const heart = arr.slice(1,arr.length -1 ).map(x => `(${x})`);
   const last = arr[arr.length - 1]?.replace (/^/,'(');
 
-  return [head, ...cors, last].filter(x=> !!x);
+  return [head, ...heart, last].filter(x=> !!x);
 }
 
 const min = min => value => value < min ? min : value;
 
+const computeIndexOfIndent = last => {
+  const i = /^.*?(\)*)$/.exec(last)[1].length - 1
+  const indexs = [...last.matchAll(/\(/g)].map(x => x["index"]).reverse();
+  return indexs[i];
+}
+
 const forceFixWrapLine = s => createArray(s).reduce((acc, value) => {
   const last = acc[acc.length-1];
   if (last) {
-    const indentToAdd = min(0)(last.lastIndexOf('('))
+    const indexOfIndent = computeIndexOfIndent(last);
+    const indentToAdd = min(0)(indexOfIndent)
     value = `${space(indentToAdd)}${value}`
   }
   acc.push(value);
