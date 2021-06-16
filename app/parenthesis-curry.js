@@ -21,14 +21,15 @@ const fixIndent = beforeFormat => afterFormat => {
   for (const i of indexStartToFixReversed) {
     const indent = getIndent(afterFormatArray[i +1])
     let j = 0;
+    const nbOfIndent = ((indent.length - getIndent(afterFormatArray[i]).length)/ INDENT) - 1;
     while (getIndent(afterFormatArray[i +1 +j]) >= indent){
       const innerIndent =getIndent(afterFormatArray[i +1+j])
-      const nbFixIndent = min(0)(innerIndent.length - INDENT);
+      const nbFixIndent = min(0)(innerIndent.length - (INDENT* nbOfIndent));
       const fixIndent = space(nbFixIndent);
       afterFormatArray[i +1 +j] = afterFormatArray[i +1 +j].replace(/(^[ ]*)(.*)$/, `${fixIndent}$2`)
       j++;
     }
-    const fixIndentFinish = space(min(0)(indent.length - INDENT * 2));
+    const fixIndentFinish = space(min(0)(indent.length - (INDENT* nbOfIndent) - INDENT));
     afterFormatArray[i +1 +j] = afterFormatArray[i +1 +j].replace(/(^[ ]*)(.*)$/, `${fixIndentFinish}$2`)
   }
   return afterFormatArray.join('\n');
