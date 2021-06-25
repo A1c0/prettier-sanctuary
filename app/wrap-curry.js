@@ -10,7 +10,9 @@ const splitOnParenthesis = pipe([
     replaceAll("(")('", ["(", "'),
     replaceAll(")")('", ")"], "'),
     flip(concat)("["),
-    concat("]")]);
+    concat("]"),
+    JSON.parse,
+]);
 
 const initArray = a => Array.isArray(a) ? a : Array.of(a);
 
@@ -29,6 +31,8 @@ const replaceFirstAndLastParenthesisBySubstitute = l => {
 const wrapLine = (line) => {
   const workingLine = /^ *\(.*?$/.exec(line) ? replaceFirstAndLastParenthesisBySubstitute(line) : line;
   const array = splitOnParenthesis(workingLine);
+  console.log(array);
+  console.log(Array.isArray(array));
   let [head, ...tail] = array.map(concatDeepString).filter(x => (Boolean(x.trim())));
   const newTail = tail.slice(1).map(x => `${space(head.length)}${x}`)
   head = `${head}${tail[0] || ''}`;
