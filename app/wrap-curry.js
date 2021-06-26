@@ -50,8 +50,10 @@ const isDeclarationTooLong = arr => {
 const wrapDeclaration = arr => {
   const [currentHead, ...currentTail] = arr;
   const newHead = currentHead.replace(/^(.* = ).*?$/, "$1");
-  const headRest = currentHead.replace(/^.* = (.*?)$/, "$1").replace (/^/,space(INDENT));
-  const newTail = [headRest, ...currentTail.map(l => l.slice(newHead.length - INDENT))];
+  const headIndent = newHead.replace(/^( *).*?$/, '$1').length;
+  const innerIndent = INDENT + headIndent;
+  const headRest = currentHead.replace(/^.* = (.*?)$/, "$1").replace (/^/,space(innerIndent));
+  const newTail = [headRest, ...currentTail.map(l => l.slice(newHead.length - innerIndent))];
   return [newHead, ...newTail];
 }
 
