@@ -13,11 +13,11 @@ const fixIndent = beforeFormat => afterFormat => {
 
   const indexStartToFix = afterFormatArray.map((value, index) => [index, value])
                                           .filter(([i, line]) => !beforeFormatArray.includes(line.trim()))
-                                          .filter(([i, line]) => /^.*[\[{]$/.test(line))
+                                          .filter(([i, line]) => /^.*[\[{]$/.test(line) || /^.*=>$/.test(line))
                                           .map(([index, line]) => index);
 
   const indexStartToFixReversed = indexStartToFix.reverse();
-
+  console.log(indexStartToFixReversed);
   for (const i of indexStartToFixReversed) {
     const indent = getIndent(afterFormatArray[i +1])
     let j = 0;
