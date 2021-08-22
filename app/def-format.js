@@ -4,6 +4,8 @@ const {joinNotIgnored} = require("./ignore-line");
 const {pipe} = require("./utils");
 const {space} = require("./common");
 
+const getIndentOfFistLine = lines => /^([ ]*).*$/.exec(lines.split('\n')[0] || '')[1].length;
+
 const inlineDef = s => {
   const defToInlines = [...s.matchAll(/^(.*?) def \(.*?(\n.*?)*;/gm)].map(x => x[0])
     .filter(x => x.includes("\n"))
@@ -12,6 +14,7 @@ const inlineDef = s => {
                     .replaceAll(')(', ') (')
                     .replace(/^(.*\[.*)(, ])(.*)$/, '$1]$3')
                     .replaceAll(/ +/g, ' ')
+                    .replace(/^ /, space(getIndentOfFistLine(i)))
               ]);
   let sCopy = s;
   for (const [beforeFormat, afterFormat] of defToInlines) {
