@@ -63,10 +63,11 @@ const wrapLineDeep = x => {
     text = wrapDeclaration(text);
   }
   text = text.join('\n');
-  text = text.replaceAll(SUBSTITUTE_END_PARENTHESIS, ')')
-    .replaceAll(SUBSTITUTE_BEGIN_PARENTHESIS, '(')
-    .replaceAll(/\n *([\);,])/g, "$1");
-  return text;
+  return pipe([
+    replaceAll(SUBSTITUTE_END_PARENTHESIS) (')'),
+    replaceAll(SUBSTITUTE_BEGIN_PARENTHESIS) ('('),
+    replaceAll(/\n *([);,])/) ("$1")
+  ])(text);
 };
 
 const wrapCurry = pipe([

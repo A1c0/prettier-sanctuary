@@ -17,7 +17,6 @@ const fixIndent = beforeFormat => afterFormat => {
                                           .map(([index, line]) => index);
 
   const indexStartToFixReversed = indexStartToFix.reverse();
-  console.log(indexStartToFixReversed);
   for (const i of indexStartToFixReversed) {
     const indent = getIndent(afterFormatArray[i +1])
     let j = 0;

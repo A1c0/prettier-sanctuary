@@ -12,7 +12,17 @@ const concat = (c) => (s) => s.concat(c);
 const flip = (fn) => (b) => (a) => fn(a)(b);
 const reduce = (fn) => (b) => (a) => a.reduce(fn, b);
 const flatten = (a) => a.flat(Infinity);
-const replaceAll = (a) => (b) => (s) => s.replaceAll(a, b);
+const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const initRegExp = s => {
+  try{
+    return new RegExp(s);
+  }catch (e) {
+    return new RegExp(escapeRegExp(s));
+  }
+}
+const replaceAll = (a) => (b) => (s) => typeof s.replaceAll === 'function' ? s.replaceAll(a, b) : s.replace(new RegExp(initRegExp(a), 'g'), b);
+const replace = (a) => (b) => (s) => s.replace(a, b);
+
 const join = (e) => (a) => a.join(e);
 const slice = (a) => (b) => (c) => c.slice(a, b);
 const when = p => fn => a => {
@@ -44,7 +54,9 @@ module.exports = {
   reduce,
   flatten,
   replaceAll,
+  replace,
   join,
   slice,
-  when, reverse
+  when,
+  reverse
 }
