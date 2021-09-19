@@ -20,7 +20,7 @@ const initRegExp = s => {
     return new RegExp(escapeRegExp(s));
   }
 }
-const replaceAll = (a) => (b) => (s) => typeof s.replaceAll === 'function' ? s.replaceAll(a, b) : s.replace(new RegExp(initRegExp(a), 'g'), b);
+const replaceAll = (a) => (b) => (s) => typeof s.replaceAll === 'function' ? s.replaceAll(initRegExp(a), b) : s.replace(new RegExp(initRegExp(a), 'g'), b);
 const replace = (a) => (b) => (s) => s.replace(a, b);
 
 const join = (e) => (a) => a.join(e);
