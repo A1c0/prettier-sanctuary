@@ -13,13 +13,10 @@ const flip = (fn) => (b) => (a) => fn(a)(b);
 const reduce = (fn) => (b) => (a) => a.reduce(fn, b);
 const flatten = (a) => a.flat(Infinity);
 const escapeRegExp = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-const initRegExp = s => {
-  try{
-    return new RegExp(s);
-  }catch (e) {
-    return new RegExp(escapeRegExp(s));
-  }
-}
+const initRegExp = s =>
+  typeof s === "string"
+    ? new RegExp(escapeRegExp(s), 'g')
+    : new RegExp(s, 'g');
 const replaceAll = (a) => (b) => (s) => typeof s.replaceAll === 'function' ? s.replaceAll(initRegExp(a), b) : s.replace(new RegExp(initRegExp(a), 'g'), b);
 const replace = (a) => (b) => (s) => s.replace(a, b);
 
