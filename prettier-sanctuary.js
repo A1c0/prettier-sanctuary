@@ -7,6 +7,7 @@ const {defFormat} = require("./app/def-format");
 const {forceExtendPipe} = require("./app/force-extend-pipe");
 const {parenthesisCurry} = require("./app/parenthesis-curry");
 const {wrapCurry} = require('./app/wrap-curry');
+const {listFiles} = require("./lib/list-files");
 
 const readTextFile = fileName => fs.readFileSync(fileName).toString();
 const writeTextFile = fileName => text => fs.writeFileSync(fileName, text);
@@ -19,7 +20,7 @@ const customReformat = pipe([
   defFormat,
 ]);
 
-const bash = filePath => pipe([
+const applySanctuaryFormattingOnFile = filePath => pipe([
   readTextFile,     // String
   split('\n'),      // Array String
   addIgnoreLines,   // Array {line: String, ignored: Boolean}
@@ -28,5 +29,13 @@ const bash = filePath => pipe([
   join('\n'),       // String
   tap(writeTextFile(filePath))
 ])(filePath);
+
+const bash = arg => {
+  const files = listFiles(arg);
+  for (const file of files) {
+    applySanctuaryFormattingOnFile(file);
+    console.log();
+  }
+}
 
 bash(process.argv[2])
