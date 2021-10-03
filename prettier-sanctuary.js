@@ -8,6 +8,7 @@ const {forceExtendPipe} = require("./app/force-extend-pipe");
 const {parenthesisCurry} = require("./app/parenthesis-curry");
 const {wrapCurry} = require('./app/wrap-curry');
 const {listFiles} = require("./lib/list-files");
+const COLOR = require("./lib/color");
 
 const readTextFile = fileName => fs.readFileSync(fileName).toString();
 const writeTextFile = fileName => text => fs.writeFileSync(fileName, text);
@@ -31,10 +32,13 @@ const applySanctuaryFormattingOnFile = filePath => pipe([
 ])(filePath);
 
 const bash = arg => {
+  performance.now();
   const files = listFiles(arg);
   for (const file of files) {
+    const t0 = performance.now();
     applySanctuaryFormattingOnFile(file);
-    console.log();
+    const t1 = performance.now();
+    console.log(COLOR.fgBlue+  + COLOR.fgGreen + ` ${t1-t0}ms` + COLOR.reset);
   }
 }
 
