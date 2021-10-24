@@ -9,6 +9,7 @@ const {parenthesisCurry} = require("./app/parenthesis-curry");
 const {wrapCurry} = require('./app/wrap-curry');
 const {listFiles} = require("./lib/list-files");
 const COLOR = require("./lib/color");
+const {applyPrettierOnFile} = require("./app/classic-prettier");
 
 const readTextFile = fileName => fs.readFileSync(fileName).toString();
 const writeTextFile = fileName => text => fs.writeFileSync(fileName, text);
@@ -31,14 +32,20 @@ const applySanctuaryFormattingOnFile = filePath => pipe([
   tap(writeTextFile(filePath))
 ])(filePath);
 
-const bash = arg => {
-  performance.now();
+
+const formatFile = async file =>  {
+  const t0 = performance.now();
+  await applyPrettierOnFile(file)
+  applySanctuaryFormattingOnFile(file);
+  const t1 = performance.now();
+  console.log(COLOR.dim + file.replace(process.cwd(), '') + COLOR.reset + ` ${t1-t0}ms`);
+}
+
+const bash = async arg => {
   const files = listFiles(arg);
+  performance.now();
   for (const file of files) {
-    const t0 = performance.now();
-    applySanctuaryFormattingOnFile(file);
-    const t1 = performance.now();
-    console.log(COLOR.fgBlue+  + COLOR.fgGreen + ` ${t1-t0}ms` + COLOR.reset);
+    await formatFile(file)
   }
 }
 

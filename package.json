@@ -7,6 +7,6 @@
   "bugs": "https://github.com/A1c0/prettier-sanctuary/issues",
   "files": ["prettier-sanctuary.js", "prettier-sanctuary.sh", "app/*.js"],
   "bin": {
-    "prettier-sanctuary": "prettier-sanctuary.sh"
+    "prettier-sanctuary": "prettier-sanctuary.js"
   }
 }
