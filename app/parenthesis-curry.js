@@ -1,6 +1,7 @@
 const {joinNotIgnored, splitOnEoLNotIgnored, mapOnLines} = require("./ignore-line");
 const {replaceAll, pipe, INDENT} = require("./utils");
 const {space} = require("./common");
+const {applyExceptOnTextGroup} = require("./exclude-string-and-regex");
 
 const getIndent = line => /^([ ]*).*$/.exec(line || '')[1];
 
@@ -44,7 +45,7 @@ const _parenthesisCurry = s => pipe([
 
 const parenthesisCurry = pipe([
   joinNotIgnored,
-  mapOnLines(_parenthesisCurry),
+  mapOnLines(applyExceptOnTextGroup(_parenthesisCurry)),
   splitOnEoLNotIgnored,
 ]);
 
