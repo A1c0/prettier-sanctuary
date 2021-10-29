@@ -1,8 +1,3 @@
-const {pipe, join} = require("./utils");
-
-const space = pipe([
-  x => Array(x).fill(' '),
-  join('')
-]);
+const space = n => " ".repeat(n);
 
 module.exports = {space}
