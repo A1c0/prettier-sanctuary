@@ -11,6 +11,7 @@ const {wrapCurry} = require('./app/wrap-curry');
 const {listFilesByArgs} = require("./lib/list-files");
 const COLOR = require("./lib/color");
 const prettier = require("prettier");
+const path = require("path");
 
 // customReformat :: Array {line: String, ignored: Boolean} -> Array {line: String, ignored: Boolean}
 const customReformat = pipe([
@@ -29,10 +30,10 @@ const applySanctuaryFormatting = text => pipe([
 ])(text);
 
 
-const formatFile = async (file, config) =>  {
+const formatFile = async (file, appDir, config) =>  {
   const t0 = performance.now();
   const text = fs.readFileSync(file, 'utf8');
-  const textPrettierFormatted = prettier.format(text, Object.assign({parser: "babel"}, config));
+  const textPrettierFormatted = prettier.format(text, Object.assign({parser: "babel", pluginSearchDirs: [appDir]}, config));
   const textSanctuaryFormatted = applySanctuaryFormatting(textPrettierFormatted);
   fs.writeFileSync(file, textSanctuaryFormatted);
   const t1 = performance.now();
@@ -46,8 +47,9 @@ const bash = async arg => {
     process.exit(1);
   }
   const config = prettier.resolveConfig.sync(process.cwd());
+  const appDir = path.dirname(prettier.resolveConfigFile.sync(process.cwd())) ?? process.cwd();
   for (const file of files) {
-    await formatFile(file, config)
+    await formatFile(file, appDir, config)
   }
 }
 
