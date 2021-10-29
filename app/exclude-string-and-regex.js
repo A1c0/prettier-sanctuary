@@ -7,7 +7,7 @@ const getIndexes = (str) => {
     if (isBegin(c)){
       const pair = [i+1];
       i++;
-      while (i < arr.length && arr[i] !== c) i++;
+      while (i < arr.length && !(arr[i] === c && arr[i-1] !== '\\')) i++;
       if (i< arr.length) {
         pair.push(i)
         indexesFound.push(pair)
