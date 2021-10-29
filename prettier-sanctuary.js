@@ -33,7 +33,7 @@ const applySanctuaryFormatting = text => pipe([
 const formatFile = async (file, appDir, config) =>  {
   const t0 = performance.now();
   const text = fs.readFileSync(file, 'utf8');
-  const textPrettierFormatted = prettier.format(text, Object.assign({parser: "babel", pluginSearchDirs: [appDir]}, config));
+  const textPrettierFormatted = prettier.format(text, Object.assign({parser: "babel", pluginSearchDirs: [path.resolve(appDir, "node_modules")]}, config));
   const textSanctuaryFormatted = applySanctuaryFormatting(textPrettierFormatted);
   fs.writeFileSync(file, textSanctuaryFormatted);
   const t1 = performance.now();
