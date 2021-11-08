@@ -1,6 +1,7 @@
 const { mapOnLines, splitOnEoLNotIgnored } = require("./ignore-line");
 const { flip, concat, flatten, pipe } = require("./utils");
 const { space } = require("./common");
+const { applyExceptOnTextGroup } = require("./exclude-string-and-regex");
 
 const prependString = flip(concat);
 const nbOf = (c) => (s) => s.split("").filter((x) => x === c).length;
@@ -38,6 +39,9 @@ const extendPipeLine = (indent) => (line) => {
 };
 
 const forceExtendPipe = (indent) =>
-  pipe([mapOnLines(extendPipeLine(indent)), splitOnEoLNotIgnored]);
+  pipe([
+    mapOnLines(applyExceptOnTextGroup(extendPipeLine(indent))),
+    splitOnEoLNotIgnored,
+  ]);
 
 module.exports = { forceExtendPipe };
