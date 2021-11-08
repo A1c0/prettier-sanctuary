@@ -13,7 +13,7 @@ const COLOR = require("./lib/color");
 const prettier = require("prettier");
 const path = require("path");
 
-// customReformat :: Array {line: String, ignored: Boolean} -> Array {line: String, ignored: Boolean}
+// customReformat :: {indent: Integer, maxLength: Integer} -> Array {line: String, ignored: Boolean} -> Array {line: String, ignored: Boolean}
 const customReformat = ({ indent, maxLength }) =>
   pipe([
     parenthesisCurry(indent),
