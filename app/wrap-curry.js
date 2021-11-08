@@ -74,7 +74,7 @@ const wrapDeclaration = (indent) => (arr) => {
 
 const wrapLineDeep = (maxLength) => (indent) => (x) => {
   let text = wrapLine(maxLength)(x);
-  if (isDeclarationTooLong(text)) {
+  if (isDeclarationTooLong(maxLength)(text)) {
     text = wrapDeclaration(indent)(text);
   }
   text = text.join("\n");
