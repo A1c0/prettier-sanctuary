@@ -1,3 +1,3 @@
-const space = n => " ".repeat(n);
+const space = (n) => " ".repeat(n);
 
-module.exports = {space}
+module.exports = { space };

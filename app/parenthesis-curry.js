@@ -7,7 +7,7 @@ const getIndent = line => /^([ ]*).*$/.exec(line || '')[1];
 
 const min = min => value => value < min ? min : value;
 
-const fixIndent = beforeFormat => afterFormat => {
+const fixIndent = indent => beforeFormat => afterFormat => {
 
   const beforeFormatArray = beforeFormat.split("\n").map(line =>line.trim());
   const afterFormatArray = afterFormat.split("\n");
@@ -21,31 +21,31 @@ const fixIndent = beforeFormat => afterFormat => {
   for (const i of indexStartToFixReversed) {
     const indent = getIndent(afterFormatArray[i +1])
     let j = 0;
-    const nbOfIndent = ((indent.length - getIndent(afterFormatArray[i]).length)/ INDENT) - 1;
+    const nbOfIndent = ((indent.length - getIndent(afterFormatArray[i]).length)/ indent) - 1;
     while (getIndent(afterFormatArray[i +1 +j]) >= indent){
       const innerIndent =getIndent(afterFormatArray[i +1+j])
-      const nbFixIndent = min(0)(innerIndent.length - (INDENT* nbOfIndent));
+      const nbFixIndent = min(0)(innerIndent.length - (indent* nbOfIndent));
       const fixIndent = space(nbFixIndent);
       afterFormatArray[i +1 +j] = afterFormatArray[i +1 +j].replace(/(^[ ]*)(.*)$/, `${fixIndent}$2`)
       j++;
     }
-    const fixIndentFinish = space(min(0)(indent.length - (INDENT* nbOfIndent) - INDENT));
+    const fixIndentFinish = space(min(0)(indent.length - (indent* nbOfIndent) - indent));
     afterFormatArray[i +1 +j] = afterFormatArray[i +1 +j].replace(/(^[ ]*)(.*)$/, `${fixIndentFinish}$2`)
   }
   return afterFormatArray.join('\n');
 };
 
-const _parenthesisCurry = s => pipe([
+const _parenthesisCurry = indent => s => pipe([
   replaceAll (/(\n *\))/g) (')'),
   replaceAll (/(\(\n *)/g) ('('),
   replaceAll (/\)[\n ]*\(/g) (')('),
-  fixIndent (s),
+  fixIndent (indent) (s),
   replaceAll (/([^ ])(\()/g) ('$1 ('),
 ])(s);
 
-const parenthesisCurry = pipe([
+const parenthesisCurry = indent => pipe([
   joinNotIgnored,
-  mapOnLines(applyExceptOnTextGroup(_parenthesisCurry)),
+  mapOnLines (applyExceptOnTextGroup (_parenthesisCurry (indent))),
   splitOnEoLNotIgnored,
 ]);
 

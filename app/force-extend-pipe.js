@@ -31,8 +31,8 @@ const extendPipeLine = indent => line => {
   return flatten([pipeBegin, argsArrayWithComma, pipeEnd]).map(prependString(previousIndent)).join('\n');
 }
 
-const forceExtendPipe = pipe([
-  mapOnLines(extendPipeLine(INDENT)),
+const forceExtendPipe = indent => pipe([
+  mapOnLines(extendPipeLine(indent)),
   splitOnEoLNotIgnored,
 ]);
 
