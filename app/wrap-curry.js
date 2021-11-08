@@ -43,8 +43,8 @@ const wrapLine = (maxLength) => (line) => {
   return [head, ...newTail].flatMap((x) =>
     needToBeWrapped(maxLength)(x)
       ? line === x
-        ? wrapLine(replaceFirstAndLastParenthesisBySubstitute(x))
-        : wrapLine(x)
+        ? wrapLine(maxLength)(replaceFirstAndLastParenthesisBySubstitute(x))
+        : wrapLine(maxLength)(x)
       : x
   );
 };
@@ -72,8 +72,8 @@ const wrapDeclaration = (indent) => (arr) => {
   return [newHead, ...newTail];
 };
 
-const wrapLineDeep = (indent) => (x) => {
-  let text = wrapLine(x);
+const wrapLineDeep = (maxLength) => (indent) => (x) => {
+  let text = wrapLine(maxLength)(x);
   if (isDeclarationTooLong(text)) {
     text = wrapDeclaration(indent)(text);
   }
@@ -87,7 +87,9 @@ const wrapLineDeep = (indent) => (x) => {
 
 const wrapCurry = (maxLength) => (indent) =>
   pipe([
-    mapOnLines(when(needToBeWrapped(maxLength))(wrapLineDeep(indent))),
+    mapOnLines(
+      when(needToBeWrapped(maxLength))(wrapLineDeep(maxLength)(indent))
+    ),
     splitOnEoLNotIgnored,
   ]);
 
