@@ -33,17 +33,14 @@ const applySanctuaryFormatting = (config) => (text) =>
 
 const formatFile = async (file, appDir, config) => {
   const t0 = performance.now();
+
   const text = fs.readFileSync(file, "utf8");
-  const textPrettierFormatted = prettier.format(
-    text,
-    Object.assign(
-      {
-        parser: "babel",
-        pluginSearchDirs: [path.resolve(appDir, "node_modules")],
-      },
-      config
-    )
-  );
+  const prettierConfig = {
+    ...config,
+    parser: "babel",
+    pluginSearchDirs: [appDir],
+  };
+  const textPrettierFormatted = prettier.format(text, prettierConfig);
   const sanctuaryConfig = {
     indent: (config && config.tabWidth) || INDENT,
     maxLength: (config && config.printWidth) || MAX_LENGTH,
@@ -77,4 +74,6 @@ const bash = async (arg) => {
   }
 };
 
-bash(process.argv.slice(2));
+bash(process.argv.slice(2)).catch((err) => {
+  console.error(COLOR.fg.red + err + COLOR.reset);
+});
