@@ -1,6 +1,7 @@
 const { mapOnLines, splitOnEoLNotIgnored } = require("./ignore-line");
 const { when, concat, pipe, flip, replaceAll } = require("./utils");
 const { space } = require("./common");
+const { applyExceptOnTextGroup } = require("./exclude-string-and-regex.js");
 
 const SUBSTITUTE_BEGIN_PARENTHESIS = "█";
 const SUBSTITUTE_END_PARENTHESIS = "▓";
@@ -88,7 +89,9 @@ const wrapLineDeep = (maxLength) => (indent) => (x) => {
 const wrapCurry = (maxLength) => (indent) =>
   pipe([
     mapOnLines(
-      when(needToBeWrapped(maxLength))(wrapLineDeep(maxLength)(indent))
+      applyExceptOnTextGroup(
+        when(needToBeWrapped(maxLength))(wrapLineDeep(maxLength)(indent))
+      )
     ),
     splitOnEoLNotIgnored,
   ]);
