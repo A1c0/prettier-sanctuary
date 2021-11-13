@@ -8,7 +8,7 @@ const nbOf = (c) => (s) => s.split("").filter((x) => x === c).length;
 const haveClosedBracket = (s) =>
   nbOf("(")(s) === nbOf(")")(s) && nbOf("[")(s) === nbOf("]")(s);
 
-const pipeRegex = /( *)(.*?S\.pipeK? \(\[)(.*?)(]\).*)/;
+const pipeRegex = /( *)(.*?S\.pipeK? \(\[)(.*)(]\).*)/;
 
 const splitArgs = (s) =>
   s.split(", ").reduce((acc, value) => {
