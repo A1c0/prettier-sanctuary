@@ -17,7 +17,15 @@ const getIndexes = (str) => {
   return indexesFound;
 };
 
-const buildAlias = (n) => `[[REPL${n}]]`;
+const buildAlias = (start, end, n) => {
+  const label = "REPL";
+  const nbOfCharOfN = `${n}`.length;
+  const nbOfCharToAdd = end - start - label.length - nbOfCharOfN;
+
+  return `${"[".repeat(Math.ceil(nbOfCharToAdd / 2))}${label}${n}${"]".repeat(
+    Math.floor(nbOfCharToAdd / 2)
+  )}`;
+};
 
 const replaceByIndex = (str, start, end, offset, alias) =>
   str.slice(0, start - offset) + alias + str.slice(end - offset);
@@ -25,7 +33,7 @@ const replaceByIndex = (str, start, end, offset, alias) =>
 const applyReplacementMap = (str, indexes) => {
   let work = { str: str, offset: 0 };
   indexes.forEach(([start, end], i) => {
-    const alias = buildAlias(i);
+    const alias = buildAlias(start, end, i);
     work.str = replaceByIndex(work.str, start, end, work.offset, alias);
     work.offset = end - start - alias.length + work.offset;
   });
@@ -43,7 +51,9 @@ const unapplyReplacementMap = (str, map) => {
 const buildReplaceTextObject = (s) => {
   const indexes = getIndexes(s);
   const map = indexes
-    .map(([start, end], i) => ({ [buildAlias(i)]: s.substring(start, end) }))
+    .map(([start, end], i) => ({
+      [buildAlias(start, end, i)]: s.substring(start, end),
+    }))
     .reduce((acc, value) => Object.assign(acc, value), {});
 
   return { text: applyReplacementMap(s, indexes), replaceMap: map };
