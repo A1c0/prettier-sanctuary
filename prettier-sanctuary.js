@@ -12,6 +12,8 @@ const { listFilesByArgs } = require("./lib/list-files");
 const COLOR = require("./lib/color");
 const prettier = require("prettier");
 const path = require("path");
+const { applyExceptOnTextGroup } = require("./app/exclude-string-and-regex.js");
+const { tap } = require("./app/utils.js");
 
 // customReformat :: {indent: Integer, maxLength: Integer} -> Array {line: String, ignored: Boolean} -> Array {line: String, ignored: Boolean}
 const customReformat = ({ indent, maxLength }) =>
@@ -22,14 +24,16 @@ const customReformat = ({ indent, maxLength }) =>
     defFormat,
   ]);
 
-const applySanctuaryFormatting = (config) => (text) =>
-  pipe([
-    split("\n"), // Array String
-    addIgnoreLines, // Array {line: String, ignored: Boolean}
-    customReformat(config), // Array {line: String, ignored: Boolean}
-    map((x) => x.line), // Array String
-    join("\n"), // String
-  ])(text);
+const applySanctuaryFormatting = (config) =>
+  applyExceptOnTextGroup((text) =>
+    pipe([
+      split("\n"), // Array String
+      addIgnoreLines, // Array {line: String, ignored: Boolean}
+      customReformat(config), // Array {line: String, ignored: Boolean}
+      map((x) => x.line), // Array String
+      join("\n"), // String
+    ])(text)
+  );
 
 const formatFile = async (file, appDir, config) => {
   const t0 = performance.now();
@@ -74,6 +78,4 @@ const bash = async (arg) => {
   }
 };
 
-bash(process.argv.slice(2)).catch((err) => {
-  console.error(COLOR.fg.red + err + COLOR.reset);
-});
+bash(process.argv.slice(2));
