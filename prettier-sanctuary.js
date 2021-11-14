@@ -29,6 +29,7 @@ const applySanctuaryFormatting = (config) =>
     pipe([
       split("\n"), // Array String
       addIgnoreLines, // Array {line: String, ignored: Boolean}
+      tap(console.log),
       customReformat(config), // Array {line: String, ignored: Boolean}
       map((x) => x.line), // Array String
       join("\n"), // String

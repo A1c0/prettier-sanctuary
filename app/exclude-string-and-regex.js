@@ -8,7 +8,7 @@ const getIndexes = (str) => {
       const pair = [i + 1];
       i++;
       while (i < arr.length && !(arr[i] === c && arr[i - 1] !== "\\")) i++;
-      if (i < arr.length) {
+      if (i < arr.length && i !== pair[0]) {
         pair.push(i);
         indexesFound.push(pair);
       }
@@ -20,13 +20,10 @@ const getIndexes = (str) => {
 const buildAlias = (start, end, n) => {
   const label = "REPL";
   const nbOfCharToAdd = Math.max(0, end - start - label.length - `${n}`.length);
-  // console.log(`nbOfCharToAdd: ${nbOfCharToAdd}`);
   return `${"#".repeat(Math.floor(nbOfCharToAdd / 2))}${label}${n}${"#".repeat(
     Math.ceil(nbOfCharToAdd / 2)
   )}`;
 };
-
-// const buildAlias = (n) => `[[REPL${n}]]`;
 
 const replaceByIndex = (str, start, end, offset, alias) =>
   str.slice(0, start - offset) + alias + str.slice(end - offset);
