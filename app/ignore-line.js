@@ -1,16 +1,16 @@
-const {split, flatten} = require("./utils");
+const { split, flatten } = require("./utils");
 
-const ignoredLine = line => ({
+const ignoredLine = (line) => ({
   line,
-  ignored: true
+  ignored: true,
 });
 
-const notIgnoredLine = line => ({
+const notIgnoredLine = (line) => ({
   line,
-  ignored: false
+  ignored: false,
 });
 
-const addIgnoreLines = lines => {
+const addIgnoreLines = (lines) => {
   const result = [];
   let i = 0;
   while (i < lines.length) {
@@ -19,13 +19,13 @@ const addIgnoreLines = lines => {
       do {
         i++;
         result.push(ignoredLine(lines[i]));
-      } while (!(/^.*;$/.test(lines[i])))
+      } while (!/^.*;$/.test(lines[i]));
     } else if (/^ *\/\*$/.test(lines[i])) {
       result.push(ignoredLine(lines[i]));
       do {
         i++;
         result.push(ignoredLine(lines[i]));
-      } while (!(/^.*\*\/$/.test(lines[i])))
+      } while (!/^.*\*\/$/.test(lines[i]));
     } else if (/^ *\/\/.*$/.test(lines[i])) {
       result.push(ignoredLine(lines[i]));
     } else {
@@ -34,9 +34,9 @@ const addIgnoreLines = lines => {
     i++;
   }
   return result;
-}
+};
 
-const joinNotIgnored = lines => {
+const joinNotIgnored = (lines) => {
   const result = [];
   let i = 0;
   while (i < lines.length) {
@@ -44,7 +44,7 @@ const joinNotIgnored = lines => {
       let str = lines[i].line;
       i++;
       while (lines[i]?.ignored === false) {
-        str += '\n' + lines[i].line;
+        str += "\n" + lines[i].line;
         i++;
       }
       result.push(notIgnoredLine(str));
@@ -54,14 +54,14 @@ const joinNotIgnored = lines => {
     }
   }
   return result;
-}
+};
 
-const mapOnLines = fn => lines => {
+const mapOnLines = (fn) => (lines) => {
   const result = [];
   for (const line of lines) {
     if (line.ignored === false) {
       const subRes = fn(line.line);
-      if (typeof subRes === 'string') {
+      if (typeof subRes === "string") {
         result.push(notIgnoredLine(subRes));
       } else if (Array.isArray(subRes)) {
         result.push(subRes.map(notIgnoredLine));
@@ -71,9 +71,13 @@ const mapOnLines = fn => lines => {
     }
   }
   return flatten(result);
-}
+};
 
-const splitOnEoLNotIgnored = lines => mapOnLines(split('\n'))(lines);
+const splitOnEoLNotIgnored = (lines) => mapOnLines(split("\n"))(lines);
 
-
-module.exports = {addIgnoreLines, joinNotIgnored, splitOnEoLNotIgnored, mapOnLines}
+module.exports = {
+  addIgnoreLines,
+  joinNotIgnored,
+  splitOnEoLNotIgnored,
+  mapOnLines,
+};
