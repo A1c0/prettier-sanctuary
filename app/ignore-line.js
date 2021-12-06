@@ -76,6 +76,7 @@ const mapOnLines = (fn) => (lines) => {
 const splitOnEoLNotIgnored = (lines) => mapOnLines(split("\n"))(lines);
 
 module.exports = {
+  notIgnoredLine,
   addIgnoreLines,
   joinNotIgnored,
   splitOnEoLNotIgnored,

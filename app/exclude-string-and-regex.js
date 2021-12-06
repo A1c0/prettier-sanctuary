@@ -1,3 +1,9 @@
+const {
+  joinNotIgnored,
+  notIgnoredLine,
+  splitOnEoLNotIgnored,
+  mapOnLines,
+} = require("./ignore-line.js");
 const getIndexes = (str) => {
   const arr = str.split("");
   const indexesFound = [];
@@ -57,10 +63,21 @@ const buildReplaceTextObject = (s) => {
   return { text: applyReplacementMap(s, indexes), replaceMap: map };
 };
 
-const applyExceptOnTextGroup = (fn) => (s) => {
-  const obj = buildReplaceTextObject(s);
-  obj.text = fn(obj.text);
-  return unapplyReplacementMap(obj.text, obj.replaceMap);
+const applyExceptOnTextGroup = (fn) => (value) => {
+  const array = joinNotIgnored(value);
+  let maps = {};
+  const arrayReplaced = array.map((e) => {
+    if (e.ignored === true) {
+      return e;
+    }
+    const text = buildReplaceTextObject(e.line);
+    maps = { ...maps, ...text.replaceMap };
+    return notIgnoredLine(text.text);
+  });
+
+  const computedValues = fn(splitOnEoLNotIgnored(arrayReplaced));
+
+  return mapOnLines((a) => unapplyReplacementMap(a, maps))(computedValues);
 };
 
 module.exports = { applyExceptOnTextGroup };
