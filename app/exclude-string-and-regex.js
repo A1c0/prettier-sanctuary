@@ -34,10 +34,10 @@ const buildAlias = (start, end, n) => {
 const replaceByIndex = (str, start, end, offset, alias) =>
   str.slice(0, start - offset) + alias + str.slice(end - offset);
 
-const applyReplacementMap = (str, indexes) => {
+const applyReplacementMap = (str, indexes, j = 0) => {
   let work = { str: str, offset: 0 };
   indexes.forEach(([start, end], i) => {
-    const alias = buildAlias(start, end, i);
+    const alias = buildAlias(start, end, i + j);
     work.str = replaceByIndex(work.str, start, end, work.offset, alias);
     work.offset = end - start - alias.length + work.offset;
   });
@@ -52,15 +52,15 @@ const unapplyReplacementMap = (str, map) => {
   return strC;
 };
 
-const buildReplaceTextObject = (s) => {
+const buildReplaceTextObject = (s, j = 0) => {
   const indexes = getIndexes(s);
   const map = indexes
     .map(([start, end], i) => ({
-      [buildAlias(start, end, i)]: s.substring(start, end),
+      [buildAlias(start, end, i + j)]: s.substring(start, end),
     }))
     .reduce((acc, value) => Object.assign(acc, value), {});
 
-  return { text: applyReplacementMap(s, indexes), replaceMap: map };
+  return { text: applyReplacementMap(s, indexes, j), replaceMap: map };
 };
 
 const applyExceptOnTextGroup = (fn) => (value) => {
@@ -70,11 +70,14 @@ const applyExceptOnTextGroup = (fn) => (value) => {
     if (e.ignored === true) {
       return e;
     }
-    const text = buildReplaceTextObject(e.line);
+    const text = buildReplaceTextObject(e.line, Object.keys(maps).length);
+    console.log(maps);
     maps = { ...maps, ...text.replaceMap };
     return notIgnoredLine(text.text);
   });
-
+  console.log("maps:");
+  console.log(maps);
+  console.log();
   const computedValues = fn(splitOnEoLNotIgnored(arrayReplaced));
 
   const results = [];
