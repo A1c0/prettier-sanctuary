@@ -83,12 +83,11 @@ const applyExceptOnTextGroup = (fn) => (value) => {
   const results = [];
   for (const lineObj of computedValues) {
     const lineObjC = JSON.parse(JSON.stringify(lineObj));
-    if (lineObjC.ignored === false) {
+    if (lineObjC.ignored === false && /REPL/.test(lineObjC.line)) {
       for (const [alias, subString] of Object.entries(maps)) {
         if (lineObjC.line.includes(alias)) {
           lineObjC.line = lineObjC.line.replace(alias, subString);
           delete maps[alias];
-          break;
         }
       }
     }
