@@ -1,6 +1,6 @@
 {
   "name": "prettier-sanctuary",
-  "version": "0.9.13",
+  "version": "0.10.0",
   "license": "MIT",
   "keywords": [
     "prettier",
@@ -9,12 +9,13 @@
   "homepage": "https://github.com/A1c0/prettier-sanctuary",
   "bugs": "https://github.com/A1c0/prettier-sanctuary/issues",
   "files": [
+    "prettier-sanctuary.sh",
     "prettier-sanctuary.js",
     "app/*.js",
     "lib/*.js"
   ],
   "bin": {
-    "prettier-sanctuary": "prettier-sanctuary.js"
+    "prettier-sanctuary": "prettier-sanctuary.sh"
   },
   "dependencies": {
     "prettier": "^2.4.1"

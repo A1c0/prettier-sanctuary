@@ -2,7 +2,6 @@ const {
   joinNotIgnored,
   notIgnoredLine,
   splitOnEoLNotIgnored,
-  mapOnLines,
 } = require("./ignore-line.js");
 const getIndexes = (str) => {
   const arr = str.split("");
@@ -71,13 +70,9 @@ const applyExceptOnTextGroup = (fn) => (value) => {
       return e;
     }
     const text = buildReplaceTextObject(e.line, Object.keys(maps).length);
-    console.log(maps);
     maps = { ...maps, ...text.replaceMap };
     return notIgnoredLine(text.text);
   });
-  console.log("maps:");
-  console.log(maps);
-  console.log();
   const computedValues = fn(splitOnEoLNotIgnored(arrayReplaced));
 
   const results = [];
