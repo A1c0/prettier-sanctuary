@@ -42,10 +42,12 @@ const fixIndent = (indentConfig) => (beforeFormat) => (afterFormat) => {
     const fixIndentFinish = space(
       min(0)(indent.length - indentConfig * nbOfIndent - indentConfig)
     );
-    afterFormatArray[i + 1 + j] = afterFormatArray[i + 1 + j].replace(
-      /(^[ ]*)(.*)$/,
-      `${fixIndentFinish}$2`
-    );
+    if (afterFormatArray[i + 1 + j]) {
+      afterFormatArray[i + 1 + j] = afterFormatArray[i + 1 + j].replace(
+        /(^[ ]*)(.*)$/,
+        `${fixIndentFinish}$2`
+      );
+    }
   }
   return afterFormatArray.join("\n");
 };
